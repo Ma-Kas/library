@@ -1,14 +1,19 @@
+///////////////////////////////////////////////////////
+/////////////////// Variables /////////////////////////
+///////////////////////////////////////////////////////
+
+// References to DOM elements
 const addBookButton = document.querySelector('#add-book');
-
 const bookCardContainer = document.querySelector('.book-card-container');
-
-const toggleReadButtons = document.querySelectorAll('.book-read-status');
-const removeBookButtons = document.querySelectorAll('.remove-book');
-
 const modalContainer = document.querySelector('#modal-container');
 const readCheckbox = document.querySelector('#read');
 const submitButton = document.querySelector('#submit');
 const cancelButton = document.querySelector('#cancel');
+
+
+// General use variables
+const READ = 'read';
+const UNREAD = 'unread';
 
 let myLibrary = [];
 
@@ -17,6 +22,11 @@ let newBookAuthor = '';
 let newBookPages = '';
 let newBookRead = '';
 
+
+
+///////////////////////////////////////////////////////
+/////////////////// Event Listeners ///////////////////
+///////////////////////////////////////////////////////
 
 addBookButton.addEventListener('click', (e) => {
   modalContainer.style.visibility = 'visible';
@@ -27,13 +37,13 @@ modalContainer.addEventListener('submit', (e) => {
   newBookAuthor = modalContainer.elements["author"].value;
   newBookPages = `${modalContainer.elements["pages"].value} pages`;
   if (modalContainer.elements["read"].checked) {
-    newBookRead = 'read';
+    newBookRead = READ;
   } else {
-    newBookRead = 'unread';
+    newBookRead = UNREAD;
   }
 
   addBookToLibrary();
-  createNewBookCard(newBookTitle, newBookAuthor, newBookPages, newBookRead);
+  addToCardContainer();
   modalContainer.style.visibility = 'hidden';
   e.preventDefault();
 
@@ -48,6 +58,11 @@ cancelButton.addEventListener('click', (e) => {
 });
 
 
+///////////////////////////////////////////////////////
+///////////////// Object Constructors /////////////////
+///////////////////////////////////////////////////////
+
+// Handle the general book object, as well as prototype functions
 function Book(title, author, pages, read) {
   this.title = title,
   this.author = author,
@@ -55,34 +70,75 @@ function Book(title, author, pages, read) {
   this.read = read
 }
 
-Book.prototype.fuckOff = function() {
-  console.log('Fuck off');
-}
 
+///////////////////////////////////////////////////////
+///////////////// General Functions ///////////////////
+///////////////////////////////////////////////////////
 
+// Create new book object from input, add to myLibrary array
 function addBookToLibrary() {
   const book = new Book(newBookTitle, newBookAuthor, newBookPages, newBookRead)
   myLibrary.push(book);
 }
 
-function camelCase(str) {
-  // converting all characters to lowercase
-  let ans = str.toLowerCase();
+// Create a card on page for each book in myLibrary array
+function populateCardContainer() {
+  myLibrary.forEach((book, index) => {
+    createNewBookCard(book.title, book.author, book.pages, book.read, index);
+  });
+}
 
-  // Returning string to camelcase
-  return ans.split(" ").reduce((s, c) => s
-      + (c.charAt(0).toUpperCase() + c.slice(1)));
+// Adds newly created book card to page
+function addToCardContainer() {
+  createNewBookCard(newBookTitle, newBookAuthor, newBookPages, newBookRead, myLibrary.length - 1);
+}
+
+// Remove the specified book from page and array
+function removeFromCardContainer(targetToRemove) {
+  console.log('clicked');
+  const indexToRemove = Number(targetToRemove.dataset.index);
+  targetToRemove.remove();
+  myLibrary.splice(indexToRemove, 1);
+
+  updateCardDataset();
 }
 
 
-function populateCardContainer() {
-  myLibrary.forEach(book => {
-    createNewBookCard(book.title, book.author, book.pages, book.read);
+// Toggle the read or unread status of specified book
+function toggleReadButton(targetParent, targetButton) {
+  const parentDataIndex = Number(targetParent.dataset.index);
+  if (myLibrary[parentDataIndex].read === READ) {
+    myLibrary[parentDataIndex].read = UNREAD;
+    targetButton.textContent = UNREAD;
+    targetButton.classList.remove('read');
+  } else {
+    myLibrary[parentDataIndex].read = READ;
+    targetButton.textContent = READ;
+    targetButton.classList.add('read');
+  }
+}
+
+
+// When removing book card, index of myLibrary array changes
+// This updates dataset attribute of cards to match array index again
+function updateCardDataset() {
+  const existingCards = document.querySelectorAll('.book-card');
+
+  existingCards.forEach(card => {
+    const currentTitle = card.querySelector('.book-title').textContent;
+    const currentAuthor = card.querySelector('.book-author').textContent;
+
+    myLibrary.forEach((book, index) => {
+      if ((book.title === currentTitle) && (book.author === currentAuthor)) {
+        card.dataset.index = index;
+      }
+    });
   });
 }
 
 
-function createNewBookCard(title, author, pages, read) {
+// Handle creation of DOM elements for book card on page
+function createNewBookCard(title, author, pages, read, index) {
   const newCard = document.createElement('div');
   const newCover = document.createElement('div');
   const newTitle = document.createElement('div');
@@ -93,6 +149,7 @@ function createNewBookCard(title, author, pages, read) {
   const newRemoveBookBtn = document.createElement('button');
 
   newCard.classList.add('book-card');
+  newCard.dataset.index = index;
 
   newCover.classList.add('book-cover');
 
@@ -107,10 +164,22 @@ function createNewBookCard(title, author, pages, read) {
 
   newCardBtnDiv.classList.add('book-card-buttons');
   newReadStatusBtn.classList.add('book-read-status');
+  newReadStatusBtn.textContent = UNREAD; // assume unread as default
+  if (read === READ) {
+    newReadStatusBtn.textContent = READ;
+    newReadStatusBtn.classList.add('read')
+  }
+ 
+  newReadStatusBtn.addEventListener('click', (e) => {
+    toggleReadButton(e.target.parentNode.parentNode, e.target);
+  })
 
-  newReadStatusBtn.textContent = read;
+
   newRemoveBookBtn.classList.add('remove-book');
   newRemoveBookBtn.textContent = 'remove';
+  newRemoveBookBtn.addEventListener('click', (e) => {
+    removeFromCardContainer(e.target.parentNode.parentNode);
+  })
 
   bookCardContainer.appendChild(newCard);
   newCard.appendChild(newCover);

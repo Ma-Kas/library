@@ -82,6 +82,15 @@ body {
   padding: 0.5rem 1rem;
 }
 
+/* Standard = assume unread */
+.book-read-status {
+  background-color: red;
+}
+
+.read {
+  background-color: green;
+}
+
 
 /* Modal related rules */
 /*                     */
