@@ -10,7 +10,6 @@ const readCheckbox = document.querySelector('#read');
 const submitButton = document.querySelector('#submit');
 const cancelButton = document.querySelector('#cancel');
 
-
 // General use variables
 const READ = 'read';
 const UNREAD = 'unread';
@@ -21,7 +20,6 @@ let newBookTitle = '';
 let newBookAuthor = '';
 let newBookPages = '';
 let newBookRead = '';
-
 
 
 ///////////////////////////////////////////////////////
@@ -41,19 +39,16 @@ modalContainer.addEventListener('submit', (e) => {
   } else {
     newBookRead = UNREAD;
   }
-
   addBookToLibrary();
   addToCardContainer();
   modalContainer.style.visibility = 'hidden';
   e.preventDefault();
-
   modalContainer.reset();
 });
 
 cancelButton.addEventListener('click', (e) => {
   modalContainer.style.visibility = 'hidden';
   e.preventDefault();
-
   modalContainer.reset();
 });
 
@@ -103,7 +98,6 @@ function removeFromCardContainer(targetToRemove) {
   updateCardDataset();
 }
 
-
 // Toggle the read or unread status of specified book
 function toggleReadButton(targetParent, targetButton) {
   const parentDataIndex = Number(targetParent.dataset.index);
@@ -117,7 +111,6 @@ function toggleReadButton(targetParent, targetButton) {
     targetButton.classList.add('read');
   }
 }
-
 
 // When removing book card, index of myLibrary array changes
 // This updates dataset attribute of cards to match array index again
@@ -135,7 +128,6 @@ function updateCardDataset() {
     });
   });
 }
-
 
 // Handle creation of DOM elements for book card on page
 function createNewBookCard(title, author, pages, read, index) {
@@ -174,7 +166,6 @@ function createNewBookCard(title, author, pages, read, index) {
     toggleReadButton(e.target.parentNode.parentNode, e.target);
   })
 
-
   newRemoveBookBtn.classList.add('remove-book');
   newRemoveBookBtn.textContent = 'remove';
   newRemoveBookBtn.addEventListener('click', (e) => {
@@ -191,4 +182,5 @@ function createNewBookCard(title, author, pages, read, index) {
   newCardBtnDiv.appendChild(newRemoveBookBtn);
 }
 
+// For inital load of page (does nothing without database)
 populateCardContainer();

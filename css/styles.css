@@ -49,6 +49,7 @@ body {
 }
 
 .book-card {
+  max-width: 380px;
   background-color: var(--bg-book-card);
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
   border-radius: 1rem;
@@ -96,7 +97,8 @@ body {
 /*                     */
 #modal-container {
   position: absolute;
-  background-color: rgba(128, 128, 128, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -112,11 +114,9 @@ body {
   background-color: white;
   border-radius: 1rem;
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.1);
-  padding: 4rem 3rem;
+  padding: 3rem 3rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   gap: 1rem;
 }
 
@@ -124,6 +124,16 @@ body {
   font-size: 1.6rem;
   font-weight: 700;
   margin-bottom: 2rem;
+}
+
+.modal-item {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.modal-item:last-child {
+  margin-top: 2rem;
 }
 
 /* Input related */
