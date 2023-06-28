@@ -54,17 +54,19 @@ cancelButton.addEventListener('click', (e) => {
 
 
 ///////////////////////////////////////////////////////
-///////////////// Object Constructors /////////////////
+///////////////// Book Class //////////////////////////
 ///////////////////////////////////////////////////////
 
 // Handle the general book object, as well as prototype functions
-function Book(title, author, pages, read) {
-  this.title = title,
-  this.author = author,
-  this.pages = pages,
-  this.read = read
-}
 
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title,
+    this.author = author,
+    this.pages = pages,
+    this.read = read
+  }
+}
 
 ///////////////////////////////////////////////////////
 ///////////////// General Functions ///////////////////
@@ -90,7 +92,6 @@ function addToCardContainer() {
 
 // Remove the specified book from page and array
 function removeFromCardContainer(targetToRemove) {
-  console.log('clicked');
   const indexToRemove = Number(targetToRemove.dataset.index);
   targetToRemove.remove();
   myLibrary.splice(indexToRemove, 1);
